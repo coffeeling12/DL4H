@@ -3,7 +3,6 @@ import numpy as np
 import os
 import pickle
 import warnings
-import easydict
 from collections import Counter
 
 warnings.filterwarnings( 'ignore' )
