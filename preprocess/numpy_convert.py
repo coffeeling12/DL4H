@@ -106,6 +106,8 @@ def convert2numpy(input_path, output_path):
     tokenizer= AutoTokenizer.from_pretrained("emilyalsentzer/Bio_ClinicalBERT")
     for src in sources:
         save_path = f'{output_path}/input/{src}'
+        # path need to exist
+        os.makedirs(save_path, exist_ok=True)
         filename = '{}_df.pkl'.format(src)
         df = pd.read_pickle(os.path.join(input_path, filename))
         print('{} input files load !'.format(src))
