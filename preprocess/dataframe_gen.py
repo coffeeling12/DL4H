@@ -172,6 +172,8 @@ def merge_df(df_lab, df_med, df_inf):
 
 def list_prep(df, df_icu):
     column_list = ['code_name', 'code_offset', 'value', 'uom']
+    print(f"list_prep df column names: {df.columns.values.tolist()}")
+    print(f"list_prep df_icu column names: {df_icu.columns.values.tolist()}")
     df_agg = df.groupby(['ID']).agg({column: lambda x: x.tolist() for column in column_list})
     df = pd.merge(df_icu, df_agg, how='left', on=['ID'])
 
@@ -272,7 +274,6 @@ def preprocess(input_path,
 
         df = merge_df(lab, med ,inf)
         print('lab med inf three categories merged in one!')
-        breakpoint()
         df = sortbyoffset(df)
         
         df = list_prep(df, df_icu)

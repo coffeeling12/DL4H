@@ -3,7 +3,7 @@ FROM python:3.9-slim
 RUN apt-get update && apt-get install -y gcc && apt-get install -y git
 
 COPY requirements.txt .
-RUN pip install --upgrade -r requirements.txt --no-cache-dir --no-deps
+RUN pip install --upgrade -r requirements.txt --no-cache-dir
 
 ENV APP_FOLDER="/app"
 

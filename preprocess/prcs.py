@@ -40,7 +40,7 @@ def multi_prcs(input_ids, token_types, tokenizer):
             try:
                 token_type[idx] = torch.LongTensor([digit])
             except:
-                breakpoint()
+                print("error with multi_prcs...")
             return (digit + 1)
 
         decode_transform(idx = 0, n_digits = 0, is_decimal = False)
