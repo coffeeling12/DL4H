@@ -225,7 +225,8 @@ def sampling(sequence, walk_len, max_length):
 
 def sortbyoffset(df):
     print('sortbyoffset')
-    sorted = df.sort_values(['code_offset'],ascending=True).groupby('ID')
+    #sorted = df.sort_values(['code_offset'],ascending=True).groupby('ID')
+    sorted = df.sort_values(['code_offset'],ascending=True)
     return sorted
 
 def preprocess(input_path,
