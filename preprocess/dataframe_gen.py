@@ -236,7 +236,10 @@ def preprocess(input_path,
                 issue_map, 
                 mimic_def_file,
                 max_length,
-                data_type):
+                data_type,
+                output_path=None):
+    if output_path is None:
+        output_path = input_path
 
     for src in ['mimic', 'eicu']:
         df_icu = pd.read_pickle(os.path.join(input_path, src, f'{src}_cohort.pk'))
@@ -304,12 +307,12 @@ def preprocess(input_path,
 
         print('Preprocessing completed.')    
         print('Writing', '{}_df.pkl'.format(src), 'to', input_path)
-        df.to_pickle(os.path.join(input_path,'{}_df.pkl'.format(src)))
+        df.to_pickle(os.path.join(output_path,'{}_df.pkl'.format(src)))
     
     df_mm = pd.read_pickle(os.path.join(input_path,'mimic_df.pkl'.format(src)))
     df_ei = pd.read_pickle(os.path.join(input_path,'eicu_df.pkl'.format(src)))
     df_pooled = pd.concat((df_mm,df_ei), axis=0).reset_index(drop=True)
-    df_pooled.to_pickle(os.path.join(input_path,'pooled_df.pkl'.format(src)))
+    df_pooled.to_pickle(os.path.join(output_path,'pooled_df.pkl'.format(src)))
     del df_mm, df_ei, df_pooled                  
 
 

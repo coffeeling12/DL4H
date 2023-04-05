@@ -117,10 +117,11 @@ def main():
                    issue_map, 
                    mimic_def_file,
                    args.max_length,
-                   args.data_type)
+                   args.data_type,
+                   args.data_output_path)
     
-    convert2numpy(args.data_input_path, args.data_output_path)
-    label_npy_file(args.data_input_path, args.data_output_path)
+    #convert2numpy(args.data_input_path, args.data_output_path)
+    #label_npy_file(args.data_input_path, args.data_output_path)
     
     print('preprocess finish!!')
 
