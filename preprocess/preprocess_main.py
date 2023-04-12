@@ -107,8 +107,8 @@ def main():
     wd = os.getcwd()
     print('working directory .. : ', wd)
 
-    create_MIMIC_dataset(os.path.join(args.data_input_path, 'mimic'))
-    create_eICU_dataset(os.path.join(args.data_input_path, 'eicu'))
+    create_MIMIC_dataset(args.data_input_path)
+    create_eICU_dataset(args.data_input_path)
 
     preprocess(args.data_input_path, 
                     item_list,

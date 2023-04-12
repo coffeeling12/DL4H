@@ -9,6 +9,8 @@ warnings.filterwarnings( 'ignore' )
 
 # Create MIMIC-III dataset
 def create_MIMIC_dataset(input_path):
+    top_level_path = input_path
+    input_path = os.path.join(input_path, 'mimic')
     patient_path = os.path.join(input_path, 'PATIENTS.csv')
     icustay_path = os.path.join(input_path, 'ICUSTAYS.csv')
     dx_path = os.path.join(input_path, 'DIAGNOSES_ICD.csv')
@@ -70,27 +72,28 @@ def create_MIMIC_dataset(input_path):
     cohort_mm = tempdf.reset_index(drop=True).copy()
     
     #diagnosis label
-    # ccs_dx = pd.read_csv('/home/ghhur/DescEmb/preprocess/ccs_multi_dx_tool_2015.csv')
-    # ccs_dx["'ICD-9-CM CODE'"] = ccs_dx["'ICD-9-CM CODE'"].str[1:].str[:-1].str.replace(" ", "")
-    # ccs_dx["'CCS LVL 1'"] = ccs_dx["'CCS LVL 1'"].str[1:].str[:-1]
-    # level1 = {}
-    # for x, y in zip(ccs_dx["'ICD-9-CM CODE'"], ccs_dx["'CCS LVL 1'"]):
-    #     level1[x] = y
+    ccs_dx = pd.read_csv(os.path.join(top_level_path, 'ccs_multi_dx_tool_2015.csv'))
+    ccs_dx["'ICD-9-CM CODE'"] = ccs_dx["'ICD-9-CM CODE'"].str[1:].str[:-1].str.replace(" ", "")
+    ccs_dx["'CCS LVL 1'"] = ccs_dx["'CCS LVL 1'"].str[1:].str[:-1]
+    level1 = {}
+    for x, y in zip(ccs_dx["'ICD-9-CM CODE'"], ccs_dx["'CCS LVL 1'"]):
+        level1[x] = y
     
-    # dx1_list = []
-    # for idx, dxx in enumerate(cohort_mm['ICD9_CODE']):
-    #     one_list = []
-    #     for dx in dxx:
-    #         dx1 = level1[dx]
-    #         one_list.append(dx1)
-    #     dx1_list.append(list(set(one_list)))
-    # cohort_mm['diagnosis'] = pd.Series(dx1_list)
-    # cohort_mm = cohort_mm[cohort_mm['diagnosis'] !=float].reset_index(drop=True)
-    # dx1_length = [len(i) for i in dx1_list]
-    # print("average length: ", np.array(dx1_length).mean())
-    # print('dx freqeuncy', np.bincount(dx1_length))
-    # print("max length: ", np.array(dx1_length).max())
-    # print("min length: ", np.array(dx1_length).min())
+    dx1_list = []
+    for _, dxx in enumerate(cohort_mm['ICD9_CODE']):
+        one_list = []
+        for dx in dxx:
+            if dx in level1:
+                dx1 = level1[dx]
+                one_list.append(dx1)
+        dx1_list.append(list(set(one_list)))
+    cohort_mm['diagnosis'] = pd.Series(dx1_list)
+    cohort_mm = cohort_mm[cohort_mm['diagnosis'] !=float].reset_index(drop=True)
+    dx1_length = [len(i) for i in dx1_list]
+    print("average length: ", np.array(dx1_length).mean())
+    print('dx freqeuncy', np.bincount(dx1_length))
+    print("max length: ", np.array(dx1_length).max())
+    print("min length: ", np.array(dx1_length).min())
 
     #save as pickle
     pickle.dump(cohort_mm, open(os.path.join(input_path, 'mimic_cohort.pk'), 'wb'), -1)
@@ -98,6 +101,8 @@ def create_MIMIC_dataset(input_path):
 
 # Create eICU dataset
 def create_eICU_dataset(input_path):
+    top_level_path = input_path
+    input_path = os.path.join(input_path, 'eicu')
     patient_path = os.path.join(input_path, 'patient.csv')
     patient_df = pd.read_csv(patient_path)
     dx_path = os.path.join(input_path, 'diagnosis.csv')
@@ -138,15 +143,15 @@ def create_eICU_dataset(input_path):
 
     tempdf = cohort12h.join(diagnosis, on='patientunitstayid') 
     cohort_ei = tempdf.copy().reset_index(drop=True)
-    #cohort_ei = eicu_diagnosis_label(cohort_ei)
-    #cohort_ei = cohort_ei[cohort_ei['diagnosis'] !=float].reset_index(drop=True)
+    cohort_ei = eicu_diagnosis_label(top_level_path, dx_path, cohort_ei)
+    cohort_ei = cohort_ei[cohort_ei['diagnosis'] !=float].reset_index(drop=True)
     cohort_ei = cohort_ei.reset_index(drop=True)
     pickle.dump(cohort_ei, open(os.path.join(input_path, 'eicu_cohort.pk'), 'wb'), -1)
 
 
 
-def eicu_diagnosis_label(eicu_cohort):
-    ccs_dx = pd.read_csv('/home/ghhur/DescEmb/preprocess/ccs_multi_dx_tool_2015.csv')
+def eicu_diagnosis_label(top_level_path, dx_path, eicu_cohort):
+    ccs_dx = pd.read_csv(os.path.join(top_level_path, 'ccs_multi_dx_tool_2015.csv'))
     ccs_dx["'ICD-9-CM CODE'"] = ccs_dx["'ICD-9-CM CODE'"].str[1:].str[:-1].str.replace(" ", "")
     ccs_dx["'CCS LVL 1'"] = ccs_dx["'CCS LVL 1'"].str[1:].str[:-1]
     level1 = {}
@@ -158,7 +163,7 @@ def eicu_diagnosis_label(eicu_cohort):
     for x in eicu_dx_df['diagnosisstring']:
         eicu_diagnosis_list.extend(x)
     eicu_dx_unique = list(set(eicu_diagnosis_list))
-    eicu_dx = pd.read_csv('/home/ghhur/data/csv/eicu/diagnosis.csv')
+    eicu_dx = pd.read_csv(dx_path)
 
     # eicu_dx all diagnosis status
     eicu_dx_list = list(eicu_dx['icd9code'].values)
@@ -173,7 +178,7 @@ def eicu_diagnosis_label(eicu_cohort):
     diagnosisstring_code_dict = {}
     key_error_list = []
 
-    for index, row in eicu_dx.iterrows():
+    for _, row in eicu_dx.iterrows():
         diagnosis_string = row['diagnosisstring']
         icd9code = row['icd9code']
         icd9code = icd9code.split(',')[0].replace('.','')
@@ -188,7 +193,7 @@ def eicu_diagnosis_label(eicu_cohort):
     print('Number of diagnosis with only ICD 10 code: {}'.format(len(key_error_list)))
 
     # icd10 to icd9 mapping csv file
-    icd10_icd9 = pd.read_csv('/home/ghhur/DescEmb/preprocess/icd10cmtoicd9gem.csv')
+    icd10_icd9 = pd.read_csv(os.path.join(top_level_path, 'icd10cmtoicd9gem.csv'))
 
     # make icd10 - icd9 dictionary
     icd10_icd9_dict = {}
