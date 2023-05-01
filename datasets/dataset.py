@@ -60,8 +60,8 @@ class BaseDataset(torch.utils.data.Dataset):
             self.fold = fold
         else:
             self.fold = os.path.join(
-                self.input_path, "fold", "{}_{}_fold_split{}.csv".format(
-                    self.prefix, self.seed, self.ratio
+                self.input_path, "fold", "{}_{}_{}_fold_split{}.csv".format( # update it to include granular file name
+                    self.prefix, self.task, self.seed, self.ratio
                 )
             )
 
@@ -72,16 +72,42 @@ class BaseDataset(torch.utils.data.Dataset):
         raise NotImplementedError()
 
     def get_fold_indices(self):
+        #if self.split == 'train':
+        #    hit = 1
+        #elif self.split == 'valid':
+        #    hit = 2
+        #elif self.split == 'test':
+        #    hit = 0
+            
         if self.split == 'train':
+            hit = 0
+        elif self.split == 'test':
             hit = 1
         elif self.split == 'valid':
             hit = 2
-        elif self.split == 'test':
-            hit = 0
     
+        print("self.fold check: ", self.fold)
+        print("local path check: ", os.getcwd())
+        
         df = pd.read_csv(self.fold)
-        splits = df[self.task].values
+        print("df shape: ", df.shape)
+        print("df col names: ", df.columns)
+        
+        # fix codes in splits where mortality_fold is used to identify train, test, valid
+        split_name = self.task + '_fold'
+        print("split name check : ", split_name)
+        #splits = df[self.task].values # comment out
+        splits = df[split_name].values
+        print("col mortality_fold unique values: ", np.unique(df['mortality_fold'].values))
+        
+        print("splits datasets first 2 values: ", splits[:2])
+        print("splits length:", len(splits))
+        print("splits unique values: ", np.unique(splits))
+        
+        print("hit value check: ", hit)
+        
         idcs = np.where(splits == hit)[0]
+        
         return idcs
 
     def mask_tokens(self, inputs: torch.Tensor, special_tokens_mask: torch.Tensor):
@@ -150,7 +176,8 @@ class Dataset(BaseDataset):
         self.sequential_lengths = None
 
         self.value = np.load(
-            file=os.path.join(self.data_path, "value.npy")
+            file=os.path.join(self.data_path, "value.npy"), 
+            allow_pickle=True # fix the error message
         )
         self.value = self.value[hit_idcs]
 
@@ -171,9 +198,16 @@ class Dataset(BaseDataset):
 
         self.label = np.load(
             file=os.path.join(
-                self.label_path, "{}_{}_label.npy".format(self.prefix, self.task)
+                self.label_path, "{}_{}.npy".format(self.prefix, self.task) # rename label.npy by removing _label to be in line with preprosessing data prep
             ).format(self.prefix, self.task),
         )
+        
+        print("label datasets check - full length: ", self.label.shape)
+        #print("label datasets check - 2: ", self.label[2].shape)
+        #print("label datasets check - 0: ", self.label[0].shape)
+        #print("label datasets check - 1: ", self.label[1].shape)
+        #print("label datasets colnames: ", self.label.dtype.names)
+        
         self.label = torch.tensor(self.label[hit_idcs], dtype=torch.long)
         
         logger.info(f"loaded {len(self.input_idcs)} {self.split} samples")
@@ -324,7 +358,7 @@ class MLMTokenizedDataset(BaseDataset):
             split=split,
             value_embed_type=value_embed_type,
             task=task,
-            seed=seed,
+            seed=seed,  
             ratio=ratio,
         )
         self.mlm_prob = mlm_prob
