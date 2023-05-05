@@ -7,11 +7,15 @@ RUN pip install --upgrade -r requirements.txt --no-cache-dir
 
 ENV APP_FOLDER="/app"
 
-COPY *.py $APP_FOLDER/
+COPY trainers/ $APP_FOLDER/trainers/
+COPY utils/ $APP_FOLDER/utils/
+COPY modules/ $APP_FOLDER/modules/
+COPY models/ $APP_FOLDER/models/
+COPY datasets/ $APP_FOLDER/datasets/
+COPY main.py $APP_FOLDER/
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=$APP_FOLDER
 WORKDIR /
 
-# ENTRYPOINT ["python", "/app/preprocess_main.py"]
-ENTRYPOINT ["python", "/app/main_supplement.py"]
+ENTRYPOINT ["python", "/app/main.py"]

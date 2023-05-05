@@ -152,8 +152,8 @@ def main():
     args = get_parser().parse_args()
     # file names
      
-    #convert2numpy(args.data_input_path, args.data_output_path)
-    #label_npy_file(args.data_input_path, args.data_output_path)
+    convert2numpy(args.data_input_path, args.data_output_path)
+    label_npy_file(args.data_input_path, args.data_output_path)
     
         
     target_cols = ['readmission', 'mortality', 'los_3day', 'los_7day', 'diagnosis']  
@@ -166,11 +166,11 @@ def main():
         X = train_valid_test_split(target_cols, df, args.seed, args.test_ratio, args.train_valid_fold)
         #X = train_valid_test_split(target_cols, df, args.seed, args.test_ratio)
         
-        #save_name = f'{src}_{args.seed}_fold_split.csv'
+        save_name = f'{src}_{args.seed}_fold_split.csv'
         #print('save path', args.data_output_path)
         #print('save savename', save_name)
         
-       # X.to_csv(os.path.join(args.data_output_path, 'fold', save_name), index=False)
+        X.to_csv(os.path.join(args.data_output_path, 'fold', save_name), index=False)
           
     
     print('preprocess finish!!')        

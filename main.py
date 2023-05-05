@@ -182,8 +182,8 @@ def set_struct(cfg: dict):
     logging.config.dictConfig(job_logging_cfg)
 
     cfg_dir = ".config"
-    os.mkdir(cfg_dir)
-    os.mkdir(cfg['save_dir'])
+    os.makedirs(cfg_dir, exist_ok=True)
+    os.makedirs(cfg['save_dir'], exist_ok=True)
 
     with open(os.path.join(cfg_dir, "config.yaml"), "w") as f:
         for k, v in cfg.items():
