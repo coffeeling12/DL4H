@@ -184,15 +184,18 @@ class Dataset(BaseDataset):
         if self.data == 'pooled':
             self.input_idcs = np.load(
                 file=os.path.join(self.data_path, "pooled_input_index{}".format(self.ext)),
+                allow_pickle=True # fix the error message
             )
         else:
             self.input_idcs = np.load(
-                file=os.path.join(self.data_path, "{}_input_index{}".format(self.prefix, self.ext))
+                file=os.path.join(self.data_path, "{}_input_index{}".format(self.prefix, self.ext)),
+                allow_pickle=True # fix the error message
             )
         self.input_idcs = self.input_idcs[hit_idcs]
 
         self.sequential_lengths = np.load(
             file=os.path.join(self.data_path, f"seq_len.npy"),
+            allow_pickle=True # fix the error message
         )
         self.sequential_lengths = self.sequential_lengths[hit_idcs]
 
@@ -200,6 +203,7 @@ class Dataset(BaseDataset):
             file=os.path.join(
                 self.label_path, "{}_{}.npy".format(self.prefix, self.task) # rename label.npy by removing _label to be in line with preprosessing data prep
             ).format(self.prefix, self.task),
+            allow_pickle=True # fix the error message
         )
         
         print("label datasets check - full length: ", self.label.shape)
@@ -273,13 +277,15 @@ class TokenizedDataset(BaseDataset):
         self.sequential_lengths = None
 
         self.value = np.load(
-            file=os.path.join(self.data_path, "value.npy")
+            file=os.path.join(self.data_path, "value.npy"),
+            allow_pickle=True # fix the error message
         )
         self.value = self.value[hit_idcs]
 
         self.input_ids, self.token_type_ids, self.attention_mask = (
             np.load(
                 file=os.path.join(self.data_path, f"{col}{self.ext}"),
+                allow_pickle=True # fix the error message
             ) for col in col_names
         )
         self.input_ids = self.input_ids[hit_idcs]
@@ -288,6 +294,7 @@ class TokenizedDataset(BaseDataset):
 
         self.sequential_lengths = np.load(
             file=os.path.join(self.data_path, "seq_len.npy"),
+            allow_pickle=True # fix the error message
         )
         self.sequential_lengths = self.sequential_lengths[hit_idcs]
 
@@ -296,6 +303,7 @@ class TokenizedDataset(BaseDataset):
             file=os.path.join(
                 self.label_path, "{}_{}_label.npy".format(self.prefix, self.task)
             ).format(self.prefix, self.task),
+            allow_pickle=True # fix the error message
         )
         self.label = torch.tensor(self.label[hit_idcs], dtype=torch.long)
     
@@ -367,7 +375,8 @@ class MLMTokenizedDataset(BaseDataset):
 
         self.input_ids, self.token_type_ids, self.attention_mask = (
             np.load(
-                file=os.path.join(self.data_path, f"{col}_unique_code.npy")
+                file=os.path.join(self.data_path, f"{col}_unique_code.npy"),
+                allow_pickle=True # fix the error message
             ) for col in col_names
         )
         logger.info(f"loaded {len(self.input_ids)} {self.split} samples")
@@ -428,7 +437,8 @@ class Word2VecDataset(BaseDataset):
         )
 
         input_idcs = np.load(
-            file=os.path.join(self.data_path, "{}_input_index{}".format(self.prefix, self.ext))
+            file=os.path.join(self.data_path, "{}_input_index{}".format(self.prefix, self.ext)),
+            allow_pickle=True # fix the error message
         )
         input_idcs = self.indexing(input_idcs, self.data, self.seed)
         self.pos_pair, self.neg_pair = self.preprocess(input_idcs)
