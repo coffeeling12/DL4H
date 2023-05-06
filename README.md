@@ -1,8 +1,8 @@
 # DL4H - Reproducibility Project
 
-# Paper chosen for replication
+## Paper chosen for replication
 
-The paper [Unifying Heterogeneous Electronic Health Records Systems via Text-Based Code Embedding] (https://proceedings.mlr.press/v174/hur22a/hur22a.pdf), authored by Kyunghoon Hur, Jiyoung Lee, Jungwoo Oh, Wesley Price, Younghak Kim, and Edward Choi, was published in the Proceedings of Machine Learning Research of Conference on Health, Inference, and Learning in 2022.
+The paper [Unifying Heterogeneous Electronic Health Records Systems via Text-Based Code Embedding](https://proceedings.mlr.press/v174/hur22a/hur22a.pdf), authored by Kyunghoon Hur, Jiyoung Lee, Jungwoo Oh, Wesley Price, Younghak Kim, and Edward Choi, was published in the Proceedings of Machine Learning Research of Conference on Health, Inference, and Learning in 2022.
 
 Citation: K. Hur, J. Lee, J. Oh, W. Price, Y. Kim, and E. Choi. Unifying heterogeneous electronic health records systems via text-based code embedding. In Conference on Health, Inference, and Learning, pages 183–203. PMLR, 2022. https://proceedings.mlr.press/v174/hur22a/hur22a.pdf
 
@@ -17,9 +17,11 @@ To install requirements:
 pip install -r requirements.txt
 ```
 
+The requirements.txt lists all dependencies required for the replication. 
+
 ## Data preparation
 
-First, download the dataset from these links:
+First, download the dataset (links can be referred to the README_orig.md):
 
 MIMIC-III
 
@@ -29,8 +31,10 @@ ccs_multi_dx_tool_2015
 
 icd10cmtoicd9gem
 
+
 Second, make directory sturcture like below:
 
+```data prep structure
 data_input_path
 ├─ mimic
 │  ├─ ADMISSIONS.csv
@@ -52,13 +56,17 @@ data_input_path
 │  └─ patient.csv
 ├─ ccs_multi_dx_tool_2015.csv
 └─ icd10cmtoicd9gem.csv
+```
 
+```
 data_output_path
 ├─mimic
 ├─eicu
 ├─pooled
 ├─label
 └─fold
+```
+
 
 ## Preprocessing
 
@@ -114,6 +122,7 @@ python3 main.py \
 
 
 Below is an emample: 
+```
 python3 main.py 
     --distributed_world_size 1 
     --input_path data_output_path 
@@ -126,7 +135,8 @@ python3 main.py
     --value_embed_type DSVA
     --n_epochs 10
     --lr 0.01
-    
+```
+
 Other configurations will set to be default, which were used in the paper excep the n_epochs and lr due to computation power and time restrictions. The n_epochs is set to 10. lr is set to 0.01. 
 
 $data should be set to 'mimic' or 'eicu'
