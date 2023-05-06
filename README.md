@@ -121,7 +121,7 @@ python3 main.py \
 ```
 
 
-Below is an emample: 
+Below is an example: 
 ```
 python3 main.py 
     --distributed_world_size 1 
@@ -151,7 +151,15 @@ $task should be set to one of ['readmission', 'mortality', 'los_3day', 'los_7day
 
 Note that --input-path should be the root directory containing preprocessed data.
 
+## Running on AWS SageMaker
 
+The above commands can also be run on AWS SageMaker. The steps below assumes you have the appropriate permissions set up along with AWS CLI and Docker installed locally.
+
+To run pre-processing, `cd` into `preprocess` and run `./build_and_push` to create a docker image and push it to Amazon ECR. This image can then be used to kick off a SageMaker processing job with the same arguments as the example under the Preprocessing section.
+
+To run training, run `./build_and_push` at the top level to create another docker image and push it to ECR. This image can then be used to kick off a SageMaker training job with the same arguments as the examples under the Training and Evaluation section above.
+
+Refer to the [SageMaker documentation](https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ProcessingJob.html) for more details on how to structure the S3 inputs and outputs.
 
 ## Pre-trained Models
 
@@ -162,7 +170,7 @@ Pre-trained models do not work based on the original codes.
 Our model achieves the following performance on :
 
 
-| Task    | Value Embedding  | Model        |  AUPCR       |
+| Task    | Value Embedding  | Model        |  AUPRC       |
 | --------|------------------|------------- | ------------ |
 | Mort    | DSVA             | DescEmb RNN  |              |
 | Mort    | VC               | DescEmb RNN  |              |
