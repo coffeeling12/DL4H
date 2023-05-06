@@ -137,7 +137,7 @@ python3 main.py
     --lr 0.01
 ```
 
-Other configurations will set to be default, which were used in the paper excep the n_epochs and lr due to computation power and time restrictions. The n_epochs is set to 10. lr is set to 0.01. 
+Other configurations will set to be default, which were used in the paper except for n_epochs and lr due to computation power and time restrictions. The n_epochs is set to 10. lr is set to 0.01. 
 
 $data should be set to 'mimic' or 'eicu'
 
@@ -163,20 +163,35 @@ Refer to the [SageMaker documentation](https://docs.aws.amazon.com/sagemaker/lat
 
 ## Pre-trained Models
 
-Pre-trained models do not work based on the original codes. 
+Pre-trained models do not work based on the original code. 
 
 ## Results
 
-Our model achieves the following performance on :
+Our model achieves the following performance (after 10 epochs):
 
+Train
 
-| Task    | Value Embedding  | Model        |  AUPRC       |
-| --------|------------------|------------- | ------------ |
-| Mort    | DSVA             | DescEmb RNN  |              |
-| Mort    | VC               | DescEmb RNN  |              |
+| Task       | Value Embedding  | Model        |  Loss    | AUROC    | AUPRC   |
+| -----------|------------------|------------- | -------- | -------- | ------- |
+| mortality  | DSVA             | DescEmb RNN  | 0.267    | 0.517    | 0.075   |
+| mortality  | VC               | DescEmb RNN  | 0.268    | 0.506    | 0.075   |
+
+Validation
+
+| Task       | Value Embedding  | Model        |  Loss    | AUROC    | AUPRC   |
+| -----------|------------------|------------- | -------- | -------- | ------- |
+| mortality  | DSVA             | DescEmb RNN  | 0.274    | 0.491    | 0.071   |
+| mortality  | VC               | DescEmb RNN  | 0.271    | 0.509    | 0.078   |
+
+Test
+
+| Task       | Value Embedding  | Model        |  Loss    | AUROC    | AUPRC   |
+| -----------|------------------|------------- | -------- | -------- | ------- |
+| mortality  | DSVA             | DescEmb RNN  | 0.465    | 0.490    | 0.073   |
+| mortality  | VC               | DescEmb RNN  | 0.460    | 0.509    | 0.081   |
 
 
 
 ## License
 
-This repository is MIT-lincensed.
+This repository is MIT-licensed.
