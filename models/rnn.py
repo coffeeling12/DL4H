@@ -45,7 +45,10 @@ class RNNModel(nn.Module):
     def pack_pad_seq(self, x, lengths):
         lengths = lengths.squeeze(-1).cpu()
         
-        packed = pack_padded_sequence(x, lengths, batch_first=True, enforce_sorted=False)
+        # fix the error message due to padding lengths
+        max_expected_len = x.shape[1]
+        packed = pack_padded_sequence(x, lengths.clamp(max=max_expected_len), batch_first=True, enforce_sorted=False)
+        #packed = pack_padded_sequence(x, lengths, batch_first=True, enforce_sorted=False)
         output, _ = self.model(packed)
         output_seq, output_len = pad_packed_sequence(output, batch_first=True, padding_value=0)
         return output_seq, output_len
