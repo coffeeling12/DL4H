@@ -318,7 +318,16 @@ class TokenizedDataset(BaseDataset):
         attn_mask = torch.LongTensor(self.attention_mask[index])
         seq_len = (torch.LongTensor(self.sequential_lengths).unsqueeze(-1)[index])
         label = torch.LongTensor(self.label).unsqueeze(-1)[index]
-        value = torch.Tensor(self.value[index])
+        clean_values = []
+        # torch.Tensor cannot handle strings, so we cast everything to float and zero out remaning in the first try
+        for e in self.value[index]:
+            try:
+                x = float(e)
+                clean_values.append(x)
+            except:
+                clean_values.append(0.0)
+
+        value = torch.Tensor(clean_values)
 
         return {
             'input_ids': input_ids,

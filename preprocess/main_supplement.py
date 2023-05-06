@@ -36,6 +36,7 @@ def label_npy_file(input_path, output_path):
     #columns_lst = ['readmission', 'mortality', 'los_3day', 'los_7day']
     # path need to exist
     os.makedirs(output_path, exist_ok=True)
+    os.makedirs(os.path.join(output_path, 'label'), exist_ok=True)
     for src in ['mimic', 'eicu', 'pooled']:
         filename = '{}_df.pkl'.format(src)
         df = pd.read_pickle(os.path.join(input_path, filename))
@@ -152,8 +153,9 @@ def main():
     args = get_parser().parse_args()
     # file names
      
-    convert2numpy(args.data_input_path, args.data_output_path)
+    #convert2numpy(args.data_input_path, args.data_output_path)
     label_npy_file(args.data_input_path, args.data_output_path)
+    os.makedirs(os.path.join(args.data_output_path, 'label'), exist_ok=True)
     
         
     target_cols = ['readmission', 'mortality', 'los_3day', 'los_7day', 'diagnosis']  
