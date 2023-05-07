@@ -167,12 +167,13 @@ Pre-trained models do not work based on the original code.
 
 ## Results
 
-Our model achieves the following performance (after 10 epochs):
+The models achieve the following performance (after 10 epochs):
 
 Train
 
 | Task       | Value Embedding  | Model        |  Loss    | AUROC    | AUPRC   |
 | -----------|------------------|------------- | -------- | -------- | ------- |
+| mortality  | DSVA             | CodeEmb      | 0.266    | 0.498    | 0.088   |
 | mortality  | DSVA             | DescEmb RNN  | 0.267    | 0.517    | 0.075   |
 | mortality  | VC               | DescEmb RNN  | 0.268    | 0.506    | 0.075   |
 
@@ -180,6 +181,7 @@ Validation
 
 | Task       | Value Embedding  | Model        |  Loss    | AUROC    | AUPRC   |
 | -----------|------------------|------------- | -------- | -------- | ------- |
+| mortality  | DSVA             | CodeEmb      | 0.272    | 0.504    | 0.083   |
 | mortality  | DSVA             | DescEmb RNN  | 0.274    | 0.491    | 0.071   |
 | mortality  | VC               | DescEmb RNN  | 0.271    | 0.509    | 0.078   |
 
@@ -187,6 +189,7 @@ Test
 
 | Task       | Value Embedding  | Model        |  Loss    | AUROC    | AUPRC   |
 | -----------|------------------|------------- | -------- | -------- | ------- |
+| mortality  | DSVA             | CodeEmb      | 0.464    | 0.503    | 0.083   |
 | mortality  | DSVA             | DescEmb RNN  | 0.465    | 0.490    | 0.073   |
 | mortality  | VC               | DescEmb RNN  | 0.460    | 0.509    | 0.081   |
 
